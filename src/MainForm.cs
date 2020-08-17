@@ -220,7 +220,6 @@ namespace Cyotek.Demo
           _fileName = fileName;
         }
 
-        this.RunScript();
         this.UpdateUi();
       }
       catch (Exception ex)
