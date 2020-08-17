@@ -29,7 +29,7 @@
     private void InitializeComponent()
     {
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-      this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+      this.menuStrip = new System.Windows.Forms.MenuStrip();
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,7 +49,7 @@
       this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+      this.toolStrip = new System.Windows.Forms.ToolStrip();
       this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -57,17 +57,20 @@
       this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+      this.statusStrip = new System.Windows.Forms.StatusStrip();
       this.statusToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+      this.cyotekLinkToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
       this.demoSplitContainer = new System.Windows.Forms.SplitContainer();
       this.renderPanel = new Cyotek.Demo.Windows.Forms.BufferedPanel();
       this.scriptSplitContainer = new System.Windows.Forms.SplitContainer();
       this.scriptTextBox = new System.Windows.Forms.TextBox();
       this.logTextBox = new System.Windows.Forms.TextBox();
       this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
-      this.menuStrip1.SuspendLayout();
-      this.toolStrip1.SuspendLayout();
-      this.statusStrip1.SuspendLayout();
+      this.widthToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+      this.heightToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+      this.menuStrip.SuspendLayout();
+      this.toolStrip.SuspendLayout();
+      this.statusStrip.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.demoSplitContainer)).BeginInit();
       this.demoSplitContainer.Panel1.SuspendLayout();
       this.demoSplitContainer.Panel2.SuspendLayout();
@@ -78,19 +81,18 @@
       this.scriptSplitContainer.SuspendLayout();
       this.SuspendLayout();
       // 
-      // menuStrip1
+      // menuStrip
       // 
-      this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+      this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem});
-      this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-      this.menuStrip1.Name = "menuStrip1";
-      this.menuStrip1.Size = new System.Drawing.Size(784, 24);
-      this.menuStrip1.TabIndex = 0;
-      this.menuStrip1.Text = "menuStrip1";
+      this.menuStrip.Location = new System.Drawing.Point(0, 0);
+      this.menuStrip.Name = "menuStrip";
+      this.menuStrip.Size = new System.Drawing.Size(784, 24);
+      this.menuStrip.TabIndex = 0;
       // 
       // fileToolStripMenuItem
       // 
@@ -259,9 +261,9 @@
       this.aboutToolStripMenuItem.Text = "&About...";
       this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
       // 
-      // toolStrip1
+      // toolStrip
       // 
-      this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+      this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
             this.openToolStripButton,
             this.saveToolStripButton,
@@ -269,11 +271,10 @@
             this.cutToolStripButton,
             this.copyToolStripButton,
             this.pasteToolStripButton});
-      this.toolStrip1.Location = new System.Drawing.Point(0, 24);
-      this.toolStrip1.Name = "toolStrip1";
-      this.toolStrip1.Size = new System.Drawing.Size(784, 25);
-      this.toolStrip1.TabIndex = 1;
-      this.toolStrip1.Text = "toolStrip1";
+      this.toolStrip.Location = new System.Drawing.Point(0, 24);
+      this.toolStrip.Name = "toolStrip";
+      this.toolStrip.Size = new System.Drawing.Size(784, 25);
+      this.toolStrip.TabIndex = 1;
       // 
       // newToolStripButton
       // 
@@ -340,22 +341,32 @@
       this.pasteToolStripButton.Text = "&Paste";
       this.pasteToolStripButton.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
       // 
-      // statusStrip1
+      // statusStrip
       // 
-      this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusToolStripStatusLabel});
-      this.statusStrip1.Location = new System.Drawing.Point(0, 539);
-      this.statusStrip1.Name = "statusStrip1";
-      this.statusStrip1.Size = new System.Drawing.Size(784, 22);
-      this.statusStrip1.TabIndex = 2;
-      this.statusStrip1.Text = "statusStrip1";
+      this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusToolStripStatusLabel,
+            this.widthToolStripStatusLabel,
+            this.heightToolStripStatusLabel,
+            this.cyotekLinkToolStripStatusLabel});
+      this.statusStrip.Location = new System.Drawing.Point(0, 539);
+      this.statusStrip.Name = "statusStrip";
+      this.statusStrip.Size = new System.Drawing.Size(784, 22);
+      this.statusStrip.TabIndex = 2;
       // 
       // statusToolStripStatusLabel
       // 
       this.statusToolStripStatusLabel.Name = "statusToolStripStatusLabel";
-      this.statusToolStripStatusLabel.Size = new System.Drawing.Size(769, 17);
+      this.statusToolStripStatusLabel.Size = new System.Drawing.Size(639, 17);
       this.statusToolStripStatusLabel.Spring = true;
       this.statusToolStripStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // cyotekLinkToolStripStatusLabel
+      // 
+      this.cyotekLinkToolStripStatusLabel.IsLink = true;
+      this.cyotekLinkToolStripStatusLabel.Name = "cyotekLinkToolStripStatusLabel";
+      this.cyotekLinkToolStripStatusLabel.Size = new System.Drawing.Size(99, 17);
+      this.cyotekLinkToolStripStatusLabel.Text = "www.cyotek.com";
+      this.cyotekLinkToolStripStatusLabel.Click += new System.EventHandler(this.CyotekLinkToolStripStatusLabel_Click);
       // 
       // demoSplitContainer
       // 
@@ -436,18 +447,28 @@
       this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_DoWork);
       this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_RunWorkerCompleted);
       // 
+      // widthToolStripStatusLabel
+      // 
+      this.widthToolStripStatusLabel.Name = "widthToolStripStatusLabel";
+      this.widthToolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+      // 
+      // heightToolStripStatusLabel
+      // 
+      this.heightToolStripStatusLabel.Name = "heightToolStripStatusLabel";
+      this.heightToolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(784, 561);
       this.Controls.Add(this.demoSplitContainer);
-      this.Controls.Add(this.statusStrip1);
-      this.Controls.Add(this.toolStrip1);
-      this.Controls.Add(this.menuStrip1);
+      this.Controls.Add(this.statusStrip);
+      this.Controls.Add(this.toolStrip);
+      this.Controls.Add(this.menuStrip);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.MainMenuStrip = this.menuStrip1;
+      this.MainMenuStrip = this.menuStrip;
       this.MaximizeBox = true;
       this.MinimizeBox = true;
       this.Name = "MainForm";
@@ -455,12 +476,12 @@
       this.ShowInTaskbar = true;
       this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultLocation;
       this.Text = "Cyotek Scripting Host Demo";
-      this.menuStrip1.ResumeLayout(false);
-      this.menuStrip1.PerformLayout();
-      this.toolStrip1.ResumeLayout(false);
-      this.toolStrip1.PerformLayout();
-      this.statusStrip1.ResumeLayout(false);
-      this.statusStrip1.PerformLayout();
+      this.menuStrip.ResumeLayout(false);
+      this.menuStrip.PerformLayout();
+      this.toolStrip.ResumeLayout(false);
+      this.toolStrip.PerformLayout();
+      this.statusStrip.ResumeLayout(false);
+      this.statusStrip.PerformLayout();
       this.demoSplitContainer.Panel1.ResumeLayout(false);
       this.demoSplitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.demoSplitContainer)).EndInit();
@@ -478,7 +499,7 @@
 
     #endregion
 
-    private System.Windows.Forms.MenuStrip menuStrip1;
+    private System.Windows.Forms.MenuStrip menuStrip;
     private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
@@ -495,7 +516,7 @@
     private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-    private System.Windows.Forms.ToolStrip toolStrip1;
+    private System.Windows.Forms.ToolStrip toolStrip;
     private System.Windows.Forms.ToolStripButton newToolStripButton;
     private System.Windows.Forms.ToolStripButton openToolStripButton;
     private System.Windows.Forms.ToolStripButton saveToolStripButton;
@@ -503,7 +524,7 @@
     private System.Windows.Forms.ToolStripButton cutToolStripButton;
     private System.Windows.Forms.ToolStripButton copyToolStripButton;
     private System.Windows.Forms.ToolStripButton pasteToolStripButton;
-    private System.Windows.Forms.StatusStrip statusStrip1;
+    private System.Windows.Forms.StatusStrip statusStrip;
     private System.Windows.Forms.SplitContainer demoSplitContainer;
     private System.Windows.Forms.SplitContainer scriptSplitContainer;
     private System.Windows.Forms.TextBox scriptTextBox;
@@ -514,6 +535,9 @@
     private System.Windows.Forms.ToolStripMenuItem gridLinesToolStripMenuItem;
     private System.Windows.Forms.ToolStripStatusLabel statusToolStripStatusLabel;
     private System.ComponentModel.BackgroundWorker backgroundWorker;
+    private System.Windows.Forms.ToolStripStatusLabel cyotekLinkToolStripStatusLabel;
+    private System.Windows.Forms.ToolStripStatusLabel widthToolStripStatusLabel;
+    private System.Windows.Forms.ToolStripStatusLabel heightToolStripStatusLabel;
   }
 }
 

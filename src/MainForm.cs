@@ -86,6 +86,13 @@ namespace Cyotek.Demo
       this.PerformClipboardAction(tb => tb.Cut());
     }
 
+    private void CyotekLinkToolStripStatusLabel_Click(object sender, EventArgs e)
+    {
+      AboutDialog.OpenCyotekHomePage();
+
+      cyotekLinkToolStripStatusLabel.LinkVisited = true;
+    }
+
     private void DrawGrid(Graphics g, float scale, float w, float h)
     {
       if (scale > 4 && gridLinesToolStripMenuItem.Checked)
@@ -393,11 +400,15 @@ namespace Cyotek.Demo
       statusToolStripStatusLabel.Text = message;
     }
 
+    private void UpdateStatusBar()
+    {
+      widthToolStripStatusLabel.Text = string.Format("Width: {0}px", _picture.Width);
+      heightToolStripStatusLabel.Text = string.Format("Height: {0}px", _picture.Width);
+    }
+
     private void UpdateUi()
     {
-      //this.LoadFields();
-      //this.UpdateSimulationControls();
-      //this.UpdateStatusBar();
+      this.UpdateStatusBar();
       this.UpdateWindowTitle();
 
       renderPanel.Invalidate();
