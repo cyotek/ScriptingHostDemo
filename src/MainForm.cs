@@ -1,5 +1,6 @@
 ﻿using Cyotek.Demo.ScriptingHost;
 using Cyotek.Demo.Windows.Forms;
+using Hazdryx.Drawing;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,6 +12,8 @@ namespace Cyotek.Demo
 {
   internal partial class MainForm : BaseForm
   {
+    #region Private Fields
+
     private Dictionary<Color, Brush> _brushCache;
 
     private string _fileName;
@@ -19,12 +22,20 @@ namespace Cyotek.Demo
 
     private SampleScriptEnvironment _scriptEnvironment;
 
+    #endregion Private Fields
+
+    #region Public Constructors
+
     public MainForm()
     {
       this.InitializeComponent();
 
       _brushCache = new Dictionary<Color, Brush>();
     }
+
+    #endregion Public Constructors
+
+    #region Protected Methods
 
     protected override void OnShown(EventArgs e)
     {
@@ -42,6 +53,10 @@ namespace Cyotek.Demo
 
       this.ProcessCommandLine();
     }
+
+    #endregion Protected Methods
+
+    #region Private Methods
 
     private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
     {
@@ -129,6 +144,37 @@ namespace Cyotek.Demo
       renderPanel.Invalidate();
     }
 
+    private bool IsImageFile(string fileName, out FastBitmap image)
+    {
+      // TODO: Better to use FreeImage or something that will
+      // detect an image format by reading the first few bytes
+
+      try
+      {
+        image = FastBitmap.FromFile(fileName);
+      }
+      catch
+      {
+        image = null;
+      }
+
+      return image != null;
+    }
+
+    private void LoadImage(FastBitmap image)
+    {
+      _picture.Width = image.Width;
+      _picture.Height = image.Height;
+
+      for (int y = 0; y < image.Height; y++)
+      {
+        for (int x = 0; x < image.Height; x++)
+        {
+          _picture.SetPixel(x, y, image[x, y]);
+        }
+      }
+    }
+
     private void NewFile()
     {
       scriptTextBox.Text = string.Empty;
@@ -162,8 +208,17 @@ namespace Cyotek.Demo
     {
       try
       {
-        scriptTextBox.Text = File.ReadAllText(fileName);
-        _fileName = fileName;
+        if (this.IsImageFile(fileName, out FastBitmap image))
+        {
+          this.LoadImage(image);
+          image.Dispose();
+          _fileName = null;
+        }
+        else
+        {
+          scriptTextBox.Text = File.ReadAllText(fileName);
+          _fileName = fileName;
+        }
 
         this.RunScript();
         this.UpdateUi();
@@ -330,5 +385,7 @@ namespace Cyotek.Demo
     {
       this.Text = string.Format("{1} - {0}", Application.ProductName, string.IsNullOrEmpty(_fileName) ? "Untitled" : Path.GetFileName(_fileName));
     }
+
+    #endregion Private Methods
   }
 }
