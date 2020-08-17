@@ -23,6 +23,11 @@ namespace Cyotek.Demo.ScriptingHost
       set { this.AssignSize(ref _height, value); }
     }
 
+    public int Length
+    {
+      get { return _width * _height; }
+    }
+
     public int Width
     {
       get { return _width; }
@@ -149,6 +154,11 @@ namespace Cyotek.Demo.ScriptingHost
       return this[x, y];
     }
 
+    public Color GetPixel(int index)
+    {
+      return this[index];
+    }
+
     public void SetPixel(Point point, Color color)
     {
       this.SetPixel(point.X, point.Y, color);
@@ -159,6 +169,14 @@ namespace Cyotek.Demo.ScriptingHost
       if (x >= 0 && x < _width && y >= 0 && y < _height)
       {
         this[x, y] = color;
+      }
+    }
+
+    public void SetPixel(int index, Color color)
+    {
+      if (index >= 0 && index < this.Length)
+      {
+        this[index] = color;
       }
     }
 
