@@ -262,9 +262,12 @@ namespace Cyotek.Demo
 
       args = Environment.GetCommandLineArgs();
 
-      if (args.Length == 2)
+      if (args.Length > 1)
       {
-        this.OpenFile(args[1]);
+        for (int i = 1; i < args.Length; i++)
+        {
+          this.OpenFile(args[i]);
+        }
       }
     }
 
