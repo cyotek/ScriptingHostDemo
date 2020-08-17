@@ -3,6 +3,7 @@ using Cyotek.Demo.Windows.Forms;
 using Hazdryx.Drawing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Media;
@@ -61,6 +62,18 @@ namespace Cyotek.Demo
     private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
     {
       AboutDialog.ShowAboutDialog();
+    }
+
+    private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+    {
+      _scriptEnvironment.WrappedExecute(scriptTextBox.Text);
+    }
+
+    private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+    {
+      this.SetStatus(string.Empty);
+
+      renderPanel.Invalidate();
     }
 
     private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -309,9 +322,9 @@ namespace Cyotek.Demo
 
     private void RunScript()
     {
-      _scriptEnvironment.WrappedExecute(scriptTextBox.Text);
+      this.SetStatus("Running script...");
 
-      renderPanel.Invalidate();
+      backgroundWorker.RunWorkerAsync();
     }
 
     private void RunToolStripMenuItem_Click(object sender, EventArgs e)
@@ -371,6 +384,13 @@ namespace Cyotek.Demo
     private void SelectAllToolStripMenuItem_Click(object sender, EventArgs e)
     {
       this.PerformClipboardAction(tb => tb.SelectAll());
+    }
+
+    private void SetStatus(string message)
+    {
+      Cursor.Current = string.IsNullOrEmpty(message) ? Cursors.Default : Cursors.WaitCursor;
+
+      statusToolStripStatusLabel.Text = message;
     }
 
     private void UpdateUi()

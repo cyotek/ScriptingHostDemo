@@ -34,7 +34,14 @@ namespace Cyotek.Demo.ScriptingHost
 
     protected override void WriteLine(string value)
     {
-      _logControl.AppendText(value + Environment.NewLine);
+      if (_logControl.InvokeRequired)
+      {
+        _logControl.Invoke(new Action<string>(this.WriteLine), value);
+      }
+      else
+      {
+        _logControl.AppendText(value + Environment.NewLine);
+      }
     }
   }
 }
