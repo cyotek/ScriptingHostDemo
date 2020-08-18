@@ -15,6 +15,8 @@ namespace Cyotek.Demo
   {
     #region Private Fields
 
+    private SampleApplication _application;
+
     private Dictionary<Color, Brush> _brushCache;
 
     private string _fileName;
@@ -36,10 +38,28 @@ namespace Cyotek.Demo
 
     #endregion Public Constructors
 
+    #region Internal Methods
+
+    internal void UpdateWindowTitle()
+    {
+      if (this.InvokeRequired)
+      {
+        this.Invoke(new MethodInvoker(this.UpdateWindowTitle));
+      }
+      else
+      {
+        this.Text = string.Format("{1} - {0}", _application.Title, string.IsNullOrEmpty(_fileName) ? "Untitled" : Path.GetFileName(_fileName));
+      }
+    }
+
+    #endregion Internal Methods
+
     #region Protected Methods
 
     protected override void OnShown(EventArgs e)
     {
+      _application = new SampleApplication(this);
+
       _picture = new PixelPicture
       {
         Width = 16,
@@ -49,6 +69,7 @@ namespace Cyotek.Demo
       _scriptEnvironment = new SampleScriptEnvironment(logTextBox);
       _scriptEnvironment.AddType("color", typeof(Color));
       _scriptEnvironment.AddValue("picture", _picture);
+      _scriptEnvironment.AddValue("application", _application);
 
       base.OnShown(e);
 
@@ -244,7 +265,7 @@ namespace Cyotek.Demo
       }
       catch (Exception ex)
       {
-        MessageBox.Show(string.Format("Failed to open file. {0}", ex.GetBaseException().Message), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(string.Format("Failed to open file. {0}", ex.GetBaseException().Message), _application.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -367,7 +388,7 @@ namespace Cyotek.Demo
       }
       catch (Exception ex)
       {
-        MessageBox.Show(string.Format("Failed to save file. {0}", ex.GetBaseException().Message), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(string.Format("Failed to save file. {0}", ex.GetBaseException().Message), _application.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -412,11 +433,6 @@ namespace Cyotek.Demo
       this.UpdateWindowTitle();
 
       renderPanel.Invalidate();
-    }
-
-    private void UpdateWindowTitle()
-    {
-      this.Text = string.Format("{1} - {0}", Application.ProductName, string.IsNullOrEmpty(_fileName) ? "Untitled" : Path.GetFileName(_fileName));
     }
 
     #endregion Private Methods
