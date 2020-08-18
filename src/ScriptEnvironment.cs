@@ -20,9 +20,51 @@ namespace Cyotek.Scripting.JavaScript
 
     private Engine _engine;
 
+    private bool _interactive;
+
     #endregion Private Fields
 
+    #region Protected Constructors
+
+    protected ScriptEnvironment()
+    {
+      _interactive = true;
+    }
+
+    #endregion Protected Constructors
+
+    #region Public Properties
+
+    public bool Interactive
+    {
+      get { return _interactive; }
+      set { _interactive = value; }
+    }
+
+    #endregion Public Properties
+
     #region Public Methods
+
+    public void AddFunction(string name, Delegate value)
+    {
+      this.InitializeEngine();
+
+      _engine.SetValue(name, value);
+    }
+
+    public void AddType(string name, Type type)
+    {
+      this.InitializeEngine();
+
+      _engine.SetValue(name, TypeReference.CreateTypeReference(_engine, type));
+    }
+
+    public void AddValue(string name, object value)
+    {
+      this.InitializeEngine();
+
+      _engine.SetValue(name, value);
+    }
 
     public void Execute(string input)
     {
@@ -58,6 +100,26 @@ namespace Cyotek.Scripting.JavaScript
       _engine.Execute(program);
     }
 
+    public virtual string TransformValue(object value, bool useLiterals)
+    {
+      string result;
+
+      if (value is JsValue jsValue)
+      {
+        result = ScriptEnvironment.TransformValue(jsValue, useLiterals);
+      }
+      else if (value is null)
+      {
+        result = useLiterals ? "null" : null;
+      }
+      else
+      {
+        result = value.ToString();
+      }
+
+      return result;
+    }
+
     public void WrappedExecute(string script)
     {
       try
@@ -70,7 +132,7 @@ namespace Cyotek.Scripting.JavaScript
 
         completionValue = _engine.GetCompletionValue();
         result = _engine.GetValue(completionValue);
-        output = TransformValue((object)result);
+        output = ScriptEnvironment.TransformValue(result, true);
 
         this.WriteLine(output);
       }
@@ -95,36 +157,19 @@ namespace Cyotek.Scripting.JavaScript
     {
       this.AddFunction("print", new Action<object>(this.WriteLine));
       this.AddFunction("log", new Action<object>(this.WriteLine));
+      this.AddFunction("cls", new Action(this.ClearScreen));
+
+      // interactive functions
       this.AddFunction("alert", new Action<object>(this.ShowAlert));
       this.AddFunction("confirm", new Func<object, bool>(this.ShowConfirm));
-      this.AddFunction("cls", new Action(this.ClearScreen));
-      // TODO: prompt
+      this.AddFunction("prompt", new Func<object, object, string>(this.ShowPrompt));
     }
 
-    public void AddValue(string name, object value)
-    {
-      this.InitializeEngine();
+    protected abstract void ShowAlert(string message);
 
-      _engine.SetValue(name, value);
-    }
+    protected abstract bool ShowConfirm(string message);
 
-    public void AddFunction(string name, Delegate value)
-    {
-      this.InitializeEngine();
-
-      _engine.SetValue(name, value);
-    }
-
-    public void AddType(string name,Type type)
-    {
-      this.InitializeEngine();
-
-      _engine.SetValue(name, TypeReference.CreateTypeReference(_engine, type));
-    }
-
-    protected abstract void ShowAlert(object obj);
-
-    protected abstract bool ShowConfirm(object obj);
+    protected abstract string ShowPrompt(string message, string defaultValue);
 
     protected abstract void WriteLine(string value);
 
@@ -175,27 +220,7 @@ namespace Cyotek.Scripting.JavaScript
       return result;
     }
 
-    private static string TransformValue(object value)
-    {
-      string result;
-
-      if (value is JsValue jsValue)
-      {
-        result = TransformValue(jsValue);
-      }
-      else if (value is null)
-      {
-        result = "null";
-      }
-      else
-      {
-        result = value.ToString();
-      }
-
-      return result;
-    }
-
-    private static string TransformValue(JsValue jsValue)
+    private static string TransformValue(JsValue jsValue, bool useLiterals)
     {
       string result;
 
@@ -206,11 +231,11 @@ namespace Cyotek.Scripting.JavaScript
           break;
 
         case Types.Undefined:
-          result = "undefined";
+          result = useLiterals ? "undefined" : null;
           break;
 
         case Types.Null:
-          result = "null";
+          result = useLiterals ? "null" : null;
           break;
 
         case Types.Boolean:
@@ -247,9 +272,29 @@ namespace Cyotek.Scripting.JavaScript
       }
     }
 
-    private void WriteLine(object obj)
+    private void ShowAlert(object message)
     {
-      this.WriteLine(ScriptEnvironment.TransformValue(obj));
+      if (_interactive)
+      {
+        this.ShowAlert(this.TransformValue(message, false));
+      }
+    }
+
+    private bool ShowConfirm(object message)
+    {
+      return _interactive && this.ShowConfirm(this.TransformValue(message, false));
+    }
+
+    private string ShowPrompt(object message, object defaultValue)
+    {
+      return _interactive
+         ? this.ShowPrompt(this.TransformValue(message, false), this.TransformValue(defaultValue, false))
+         : null;
+    }
+
+    private void WriteLine(object value)
+    {
+      this.WriteLine(this.TransformValue(value, true));
     }
 
     #endregion Private Methods

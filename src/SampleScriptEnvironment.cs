@@ -1,35 +1,71 @@
 ﻿using Cyotek.Scripting.JavaScript;
+using Cyotek.Windows.Forms;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Cyotek.Demo.ScriptingHost
 {
   internal class SampleScriptEnvironment : ScriptEnvironment
   {
+    #region Private Fields
+
     private readonly TextBoxBase _logControl;
+
+    #endregion Private Fields
+
+    #region Public Constructors
 
     public SampleScriptEnvironment(TextBoxBase logControl)
     {
       _logControl = logControl;
     }
 
+    #endregion Public Constructors
+
+    #region Protected Methods
+
     protected override void ClearScreen()
     {
       _logControl.Clear();
     }
 
-    protected override void ShowAlert(object obj)
+    protected override void ShowAlert(string message)
     {
-      throw new NotImplementedException();
+      MessageBox.Show(message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
     }
 
-    protected override bool ShowConfirm(object obj)
+    protected override bool ShowConfirm(string message)
     {
-      throw new NotImplementedException();
+      return MessageBox.Show(message, Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+    }
+
+    protected override string ShowPrompt(string message, string defaultValue)
+    {
+      string result;
+      Form owner;
+
+      owner = _logControl.FindForm();
+
+      if (owner.InvokeRequired)
+      {
+        Func<string, string, string> caller;
+        IAsyncResult asyncResult;
+
+        caller = this.ShowPromptDialog;
+
+        asyncResult = owner.BeginInvoke(caller, message, defaultValue);
+        asyncResult.AsyncWaitHandle.WaitOne();
+
+        result =(string) owner.EndInvoke(asyncResult);
+
+        asyncResult.AsyncWaitHandle.Close();
+      }
+      else
+      {
+        result = InputDialog.ShowInputDialog(_logControl.FindForm(), message, Application.ProductName, defaultValue);
+      }
+
+      return result;
     }
 
     protected override void WriteLine(string value)
@@ -43,5 +79,16 @@ namespace Cyotek.Demo.ScriptingHost
         _logControl.AppendText(value + Environment.NewLine);
       }
     }
+
+    #endregion Protected Methods
+
+    #region Private Methods
+
+    private string ShowPromptDialog(string message, string defaultValue)
+    {
+      return InputDialog.ShowInputDialog(_logControl.FindForm(), message, defaultValue);
+    }
+
+    #endregion Private Methods
   }
 }
