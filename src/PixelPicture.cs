@@ -7,7 +7,11 @@ namespace Cyotek.Demo.ScriptingHost
   {
     #region Private Fields
 
+    private Color _fillColor;
+
     private int _height;
+
+    private Color _lineColor;
 
     private Color[] _pixels;
 
@@ -15,7 +19,26 @@ namespace Cyotek.Demo.ScriptingHost
 
     #endregion Private Fields
 
+    #region Public Constructors
+
+    public PixelPicture()
+    {
+      _width = 16;
+      _height = 16;
+      _pixels = new Color[_width * _height];
+      _fillColor = Color.White;
+      _lineColor = Color.Black;
+    }
+
+    #endregion Public Constructors
+
     #region Public Properties
+
+    public Color FillColor
+    {
+      get { return _fillColor; }
+      set { _fillColor = value; }
+    }
 
     public int Height
     {
@@ -26,6 +49,12 @@ namespace Cyotek.Demo.ScriptingHost
     public int Length
     {
       get { return _width * _height; }
+    }
+
+    public Color LineColor
+    {
+      get { return _lineColor; }
+      set { _lineColor = value; }
     }
 
     public int Width
@@ -56,7 +85,7 @@ namespace Cyotek.Demo.ScriptingHost
 
     public void Clear()
     {
-      this.Clear(Color.White);
+      this.Clear(_fillColor);
     }
 
     public void Clear(Color color)
@@ -67,12 +96,22 @@ namespace Cyotek.Demo.ScriptingHost
       }
     }
 
+    public void DrawCircle(int cx, int cy, int radius)
+    {
+      this.DrawCircle(cx, cy, radius, _lineColor);
+    }
+
     public void DrawCircle(int cx, int cy, int radius, Color color)
     {
       foreach (Point point in Geometry.GetCirclePoints(cx, cy, radius))
       {
         this.SetPixel(point, color);
       }
+    }
+
+    public void DrawCurve(int x0, int y0, int x1, int y1, int x2, int y2)
+    {
+      this.DrawCurve(x0, y0, x1, y1, x2, y2, _lineColor); ;
     }
 
     public void DrawCurve(int x0, int y0, int x1, int y1, int x2, int y2, Color color)
@@ -83,12 +122,22 @@ namespace Cyotek.Demo.ScriptingHost
       }
     }
 
+    public void DrawEllipse(int x, int y, int w, int h)
+    {
+      this.DrawEllipse(x, y, w, h, _lineColor);
+    }
+
     public void DrawEllipse(int x, int y, int w, int h, Color color)
     {
       foreach (Point point in Geometry.GetEllipsePoints(x, y, x + w, y + h))
       {
         this.SetPixel(point, color);
       }
+    }
+
+    public void DrawLine(int x1, int y1, int x2, int y2)
+    {
+      this.DrawLine(x1, y1, x2, y2, _lineColor);
     }
 
     public void DrawLine(int x1, int y1, int x2, int y2, Color color)
@@ -99,6 +148,11 @@ namespace Cyotek.Demo.ScriptingHost
       }
     }
 
+    public void DrawRectangle(int x, int y, int width, int height)
+    {
+      this.DrawRectangle(x, y, width, height, _lineColor);
+    }
+
     public void DrawRectangle(int x, int y, int width, int height, Color color)
     {
       this.DrawLine(x, y, x + width, y, color);
@@ -107,12 +161,22 @@ namespace Cyotek.Demo.ScriptingHost
       this.DrawLine(x, y + height, x, y, color);
     }
 
+    public void FillRectangle(int x, int y, int width, int height)
+    {
+      this.FillRectangle(x, y, width, height, _fillColor);
+    }
+
     public void FillRectangle(int x, int y, int width, int height, Color color)
     {
       for (int r = 0; r <= height; r++)
       {
         this.DrawLine(x, y + r, x + width, y + r, color);
       }
+    }
+
+    public void FloodFill(int x, int y)
+    {
+      this.FloodFill(x, y, _lineColor, _fillColor);
     }
 
     public void FloodFill(int x, int y, Color targetColor, Color replacementColor)
@@ -157,6 +221,16 @@ namespace Cyotek.Demo.ScriptingHost
     public Color GetPixel(int index)
     {
       return this[index];
+    }
+
+    public void Plot(int x, int y)
+    {
+      this.SetPixel(x, y, _lineColor);
+    }
+
+    public void Plot(int x, int y, Color color)
+    {
+      this.SetPixel(x, y, color);
     }
 
     public void SetPixel(Point point, Color color)
