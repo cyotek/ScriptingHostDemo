@@ -1,7 +1,7 @@
-﻿using Jint;
+﻿using Esprima;
+using Esprima.Ast;
+using Jint;
 using Jint.Native;
-using Jint.Parser;
-using Jint.Parser.Ast;
 using Jint.Runtime;
 using Jint.Runtime.Interop;
 using System;
@@ -68,9 +68,9 @@ namespace Cyotek.Scripting.JavaScript
 
     public void Execute(string input)
     {
-      Program program;
+      Script program;
 
-      program = new JavaScriptParser().Parse(input);
+      program = new JavaScriptParser(input).ParseScript();
 
       this.InitializeEngine();
 
@@ -91,9 +91,9 @@ namespace Cyotek.Scripting.JavaScript
 
     public void Load(string script)
     {
-      Program program;
+      Script program;
 
-      program = new JavaScriptParser().Parse(script);
+      program = new JavaScriptParser(script).ParseScript();
 
       this.InitializeEngine();
 
@@ -198,19 +198,15 @@ namespace Cyotek.Scripting.JavaScript
       return result;
     }
 
-    private static bool HasMainFunction(Program program)
+    private static bool HasMainFunction(Script program)
     {
       bool result;
 
       result = false;
 
-      for (int i = 0; i < program.FunctionDeclarations.Count; i++)
+      for (int i = 0; i < program.ChildNodes.Count; i++)
       {
-        FunctionDeclaration functionDeclaration;
-
-        functionDeclaration = program.FunctionDeclarations[i];
-
-        if (string.Equals(functionDeclaration.Id.Name, MainFunctionName, StringComparison.OrdinalIgnoreCase))
+        if (program.ChildNodes[i] is FunctionDeclaration functionDeclaration && string.Equals(functionDeclaration.Id.Name, MainFunctionName, StringComparison.OrdinalIgnoreCase))
         {
           result = true;
           break;
