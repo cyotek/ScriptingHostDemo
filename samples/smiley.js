@@ -1,8 +1,8 @@
-let size = 64
-let half = size / 2;
-let quarter = size / 4;
-let eighth = size / 8;
-let sixteenth = size / 16;
+var size = 64
+var half = size / 2;
+var quarter = size / 4;
+var eighth = size / 8;
+var sixteenth = size / 16;
 
 picture.Width = size;
 picture.Height = size;

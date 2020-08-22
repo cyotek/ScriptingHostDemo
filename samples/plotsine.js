@@ -3,11 +3,11 @@ var sy2;
 var cy1;
 var cy2;
 
-let width = 128
-let height = 64;
-let third = height / 3;
-let lineColor = color.FromArgb(102, 51, 153);
-let lineColor2 = color.FromArgb(153, 51, 102);
+var width = 128
+var height = 64;
+var third = height / 3;
+var lineColor = color.FromArgb(102, 51, 153);
+var lineColor2 = color.FromArgb(153, 51, 102);
 
 picture.Width = width;
 picture.Height = height;

@@ -1,20 +1,20 @@
 if(confirm("SHALL WE PLAY A GAME?"))
 {
-  let width = 64;
-  let height = 64;
-  let wWidth = 12;
-  let oWidth = 10;
-  let pWidth = 8;
-  let rWidth = 8;
-  let margin = 3;
-  let titleWidth = wWidth + oWidth + pWidth + rWidth + (margin * 3);
-  let textHeight = 10;
-  let textX = Math.round((width - titleWidth) / 2);
-  let textY = height - (textHeight + 10);
-  let boxX = textX;
-  let boxY = 10;
-  let boxW = titleWidth - 1;
-  let boxH = textY - (boxY + 10);
+  var width = 64;
+  var height = 64;
+  var wWidth = 12;
+  var oWidth = 10;
+  var pWidth = 8;
+  var rWidth = 8;
+  var margin = 3;
+  var titleWidth = wWidth + oWidth + pWidth + rWidth + (margin * 3);
+  var textHeight = 10;
+  var textX = Math.round((width - titleWidth) / 2);
+  var textY = height - (textHeight + 10);
+  var boxX = textX;
+  var boxY = 10;
+  var boxW = titleWidth - 1;
+  var boxH = textY - (boxY + 10);
 
   picture.width = width;
   picture.height = height;
