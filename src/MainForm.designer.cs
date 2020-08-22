@@ -59,6 +59,8 @@
       this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.statusStrip = new System.Windows.Forms.StatusStrip();
       this.statusToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+      this.widthToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+      this.heightToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
       this.cyotekLinkToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
       this.demoSplitContainer = new System.Windows.Forms.SplitContainer();
       this.renderPanel = new Cyotek.Demo.Windows.Forms.BufferedPanel();
@@ -66,8 +68,6 @@
       this.scriptTextBox = new System.Windows.Forms.TextBox();
       this.logTextBox = new System.Windows.Forms.TextBox();
       this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
-      this.widthToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-      this.heightToolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
       this.menuStrip.SuspendLayout();
       this.toolStrip.SuspendLayout();
       this.statusStrip.SuspendLayout();
@@ -356,9 +356,19 @@
       // statusToolStripStatusLabel
       // 
       this.statusToolStripStatusLabel.Name = "statusToolStripStatusLabel";
-      this.statusToolStripStatusLabel.Size = new System.Drawing.Size(639, 17);
+      this.statusToolStripStatusLabel.Size = new System.Drawing.Size(670, 17);
       this.statusToolStripStatusLabel.Spring = true;
       this.statusToolStripStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // widthToolStripStatusLabel
+      // 
+      this.widthToolStripStatusLabel.Name = "widthToolStripStatusLabel";
+      this.widthToolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+      // 
+      // heightToolStripStatusLabel
+      // 
+      this.heightToolStripStatusLabel.Name = "heightToolStripStatusLabel";
+      this.heightToolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
       // 
       // cyotekLinkToolStripStatusLabel
       // 
@@ -411,7 +421,7 @@
       // 
       this.scriptSplitContainer.Panel2.Controls.Add(this.logTextBox);
       this.scriptSplitContainer.Size = new System.Drawing.Size(348, 490);
-      this.scriptSplitContainer.SplitterDistance = 288;
+      this.scriptSplitContainer.SplitterDistance = 388;
       this.scriptSplitContainer.TabIndex = 0;
       // 
       // scriptTextBox
@@ -424,7 +434,7 @@
       this.scriptTextBox.Multiline = true;
       this.scriptTextBox.Name = "scriptTextBox";
       this.scriptTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.scriptTextBox.Size = new System.Drawing.Size(348, 288);
+      this.scriptTextBox.Size = new System.Drawing.Size(348, 388);
       this.scriptTextBox.TabIndex = 0;
       this.scriptTextBox.WordWrap = false;
       // 
@@ -438,7 +448,7 @@
       this.logTextBox.Name = "logTextBox";
       this.logTextBox.ReadOnly = true;
       this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.logTextBox.Size = new System.Drawing.Size(348, 198);
+      this.logTextBox.Size = new System.Drawing.Size(348, 98);
       this.logTextBox.TabIndex = 1;
       this.logTextBox.WordWrap = false;
       // 
@@ -446,16 +456,6 @@
       // 
       this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_DoWork);
       this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_RunWorkerCompleted);
-      // 
-      // widthToolStripStatusLabel
-      // 
-      this.widthToolStripStatusLabel.Name = "widthToolStripStatusLabel";
-      this.widthToolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
-      // 
-      // heightToolStripStatusLabel
-      // 
-      this.heightToolStripStatusLabel.Name = "heightToolStripStatusLabel";
-      this.heightToolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
       // 
       // MainForm
       // 
@@ -471,6 +471,7 @@
       this.MainMenuStrip = this.menuStrip;
       this.MaximizeBox = true;
       this.MinimizeBox = true;
+      this.MinimumSize = new System.Drawing.Size(640, 480);
       this.Name = "MainForm";
       this.ShowIcon = true;
       this.ShowInTaskbar = true;
