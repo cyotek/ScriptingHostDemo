@@ -1,9 +1,12 @@
-for(var i = 0; i < picture.Length; i++)
+function main()
 {
-  let current = picture.getPixel(i);
-  let grayscale = toGrayScale(current);
+  for(var i = 0; i < picture.Length; i++)
+  {
+    let current = picture.getPixel(i);
+    let grayscale = toGrayScale(current);
 
-  picture.setPixel(i, grayscale);
+    picture.setPixel(i, grayscale);
+  }
 }
 
 function toGrayScale(c)
