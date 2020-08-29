@@ -1,13 +1,19 @@
 ﻿using Cyotek.Demo.ScriptingHost;
 using Cyotek.Demo.Windows.Forms;
+using Cyotek.Windows.Forms;
+using Esprima;
+using Esprima.Ast;
 using Hazdryx.Drawing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Media;
+using System.Text;
 using System.Windows.Forms;
+using Program = Esprima.Ast.Program;
 
 namespace Cyotek.Demo
 {
@@ -87,12 +93,18 @@ namespace Cyotek.Demo
 
     private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
     {
-      _scriptEnvironment.WrappedExecute(scriptTextBox.Text);
+      e.Result = _scriptEnvironment.Evaluate(scriptTextBox.Text);
     }
 
     private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
+      string result;
+
       this.SetStatus(string.Empty);
+
+      result = e.Result is null ? "null" : e.Result.ToString();
+
+      logTextBox.AppendText(result + Environment.NewLine);
 
       renderPanel.Invalidate();
     }
@@ -176,6 +188,71 @@ namespace Cyotek.Demo
       }
 
       return value;
+    }
+
+    private string GetNodeDescription(Node node)
+    {
+      string result;
+
+      // TODO: This list is incomplete
+
+      if (node is FunctionDeclaration functionDeclaration)
+      {
+        StringBuilder sb;
+
+        sb = new StringBuilder();
+
+        sb.Append(functionDeclaration.Id.Name);
+        sb.Append('(');
+
+        for (int i = 0; i < functionDeclaration.Params.Count; i++)
+        {
+          if (i > 0)
+          {
+            sb.Append(',').Append(' ');
+          }
+
+          sb.Append(this.GetNodeDescription(functionDeclaration.Params[i]));
+        }
+
+        sb.Append(')');
+
+        result = sb.ToString();
+      }
+      else if (node is Identifier identifierNode)
+      {
+        result = identifierNode.Name;
+      }
+      else if (node is VariableDeclaration variableDeclaration)
+      {
+        result = variableDeclaration.Kind.ToString();
+      }
+      else if (node is BinaryExpression binaryExpression)
+      {
+        result = binaryExpression.Operator.ToString();
+      }
+      else if (node is Literal literal)
+      {
+        result = literal.Value?.ToString() ?? "null";
+      }
+      else if (node is VariableDeclarator variableDeclarator)
+      {
+        result = this.GetNodeDescription(variableDeclarator.Id);
+      }
+      else if (node is StaticMemberExpression staticMemberExpression)
+      {
+        result = this.GetNodeDescription(staticMemberExpression.Object) + "." + this.GetNodeDescription(staticMemberExpression.Property);
+      }
+      //else if (!(node is BlockStatement || node is ReturnStatement || node is CallExpression))
+      //{
+      //  result = null;
+      //}
+      else
+      {
+        result = null;
+      }
+
+      return result;
     }
 
     private void GridLinesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -433,6 +510,70 @@ namespace Cyotek.Demo
       this.UpdateWindowTitle();
 
       renderPanel.Invalidate();
+    }
+
+    private void ViewASTToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      void PushNodes(Stack<Tuple<Node, int>> nodes, Node node, int indent)
+      {
+        bool skipIdentifiers;
+
+        skipIdentifiers = node is FunctionDeclaration || node is MemberExpression || node is VariableDeclarator;
+
+        for (int i = node.ChildNodes.Count; i > 0; i--)
+        {
+          Node childNode;
+
+          childNode = node.ChildNodes[i - 1];
+
+          if (!skipIdentifiers || !(childNode is Identifier))
+          {
+            nodes.Push(Tuple.Create(childNode, indent));
+          }
+        }
+      }
+
+      try
+      {
+        StringBuilder sb;
+        JavaScriptParser parser;
+        Program script;
+        Stack<Tuple<Node, int>> nodes;
+
+        sb = new StringBuilder();
+        parser = new JavaScriptParser(scriptTextBox.Text);
+        script = parser.ParseScript();
+        nodes = new Stack<Tuple<Node, int>>();
+
+        PushNodes(nodes, script, 0);
+
+        do
+        {
+          string description;
+
+          (Node node, int indent) = nodes.Pop();
+
+          sb.Append(' ', indent * 2);
+
+          sb.Append(node.Type);
+
+          description = this.GetNodeDescription(node);
+          if (!string.IsNullOrEmpty(description))
+          {
+            sb.Append(' ').Append('[').Append(description).Append(']');
+          }
+
+          sb.AppendLine();
+
+          PushNodes(nodes, node, indent + 1);
+        } while (nodes.Count > 0);
+
+        InformationDialog.ShowDialog("View AST", "&AST:", sb.ToString());
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(string.Format("Failed to create AST. {0}", ex.GetBaseException().Message), _application.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     #endregion Private Methods

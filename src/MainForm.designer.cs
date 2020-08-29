@@ -47,6 +47,8 @@
       this.gridLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+      this.viewASTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStrip = new System.Windows.Forms.ToolStrip();
@@ -226,14 +228,16 @@
       this.gridLinesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
       this.gridLinesToolStripMenuItem.Name = "gridLinesToolStripMenuItem";
       this.gridLinesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-      this.gridLinesToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+      this.gridLinesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
       this.gridLinesToolStripMenuItem.Text = "&Grid Lines";
       this.gridLinesToolStripMenuItem.Click += new System.EventHandler(this.GridLinesToolStripMenuItem_Click);
       // 
       // toolsToolStripMenuItem
       // 
       this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.runToolStripMenuItem});
+            this.runToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.viewASTToolStripMenuItem});
       this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
       this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
       this.toolsToolStripMenuItem.Text = "&Tools";
@@ -242,9 +246,22 @@
       // 
       this.runToolStripMenuItem.Name = "runToolStripMenuItem";
       this.runToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-      this.runToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
-      this.runToolStripMenuItem.Text = "&Run...";
+      this.runToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+      this.runToolStripMenuItem.Text = "&Run";
       this.runToolStripMenuItem.Click += new System.EventHandler(this.RunToolStripMenuItem_Click);
+      // 
+      // toolStripMenuItem1
+      // 
+      this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+      this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+      // 
+      // viewASTToolStripMenuItem
+      // 
+      this.viewASTToolStripMenuItem.Name = "viewASTToolStripMenuItem";
+      this.viewASTToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F6;
+      this.viewASTToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+      this.viewASTToolStripMenuItem.Text = "View &AST";
+      this.viewASTToolStripMenuItem.Click += new System.EventHandler(this.ViewASTToolStripMenuItem_Click);
       // 
       // helpToolStripMenuItem
       // 
@@ -539,6 +556,8 @@
     private System.Windows.Forms.ToolStripStatusLabel cyotekLinkToolStripStatusLabel;
     private System.Windows.Forms.ToolStripStatusLabel widthToolStripStatusLabel;
     private System.Windows.Forms.ToolStripStatusLabel heightToolStripStatusLabel;
+    private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+    private System.Windows.Forms.ToolStripMenuItem viewASTToolStripMenuItem;
   }
 }
 

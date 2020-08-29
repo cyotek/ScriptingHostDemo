@@ -61,6 +61,12 @@
     <Compile Include="AboutDialog.designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="InformationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InformationDialog.designer.cs">
+      <DependentUpon>InformationDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="SampleApplication.cs" />
     <Compile Include="BaseForm.cs">
       <SubType>Form</SubType>
@@ -90,6 +96,9 @@
     <Compile Include="ScriptEnvironment.cs" />
     <EmbeddedResource Include="AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InformationDialog.resx">
+      <DependentUpon>InformationDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InputDialog.resx">
       <DependentUpon>InputDialog.cs</DependentUpon>
