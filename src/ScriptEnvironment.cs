@@ -18,9 +18,13 @@ namespace Cyotek.Scripting.JavaScript
 
     #region Private Fields
 
+    private static readonly object[] _defaultArguments = new object[0];
+
     private Engine _engine;
 
     private bool _interactive;
+
+    private bool _suppressErrors;
 
     #endregion Private Fields
 
@@ -29,6 +33,7 @@ namespace Cyotek.Scripting.JavaScript
     protected ScriptEnvironment()
     {
       _interactive = true;
+      _suppressErrors = true;
     }
 
     #endregion Protected Constructors
@@ -39,6 +44,12 @@ namespace Cyotek.Scripting.JavaScript
     {
       get { return _interactive; }
       set { _interactive = value; }
+    }
+
+    public bool SuppressErrors
+    {
+      get { return _suppressErrors; }
+      set { _suppressErrors = value; }
     }
 
     #endregion Public Properties
@@ -66,80 +77,82 @@ namespace Cyotek.Scripting.JavaScript
       _engine.SetValue(name, value);
     }
 
-    public void Execute(string input)
+    public object Evaluate(string script)
     {
-      Script program;
+      object result;
 
-      program = new JavaScriptParser(input).ParseScript();
-
-      this.InitializeEngine();
-
-      _engine.Execute(program);
-
-      if (ScriptEnvironment.HasMainFunction(program) && !ScriptEnvironment.HasMainCaller(program))
+      try
       {
-        _engine.Invoke(MainFunctionName);
+        this.Execute(script);
+
+        result = _engine.GetCompletionValue().ToObject();
       }
-    }
-
-    public void Invoke(string name)
-    {
-      this.InitializeEngine();
-
-      _engine.Invoke(name);
-    }
-
-    public void Load(string script)
-    {
-      Script program;
-
-      program = new JavaScriptParser(script).ParseScript();
-
-      this.InitializeEngine();
-
-      _engine.Execute(program);
-    }
-
-    public virtual string TransformValue(object value, bool useLiterals)
-    {
-      string result;
-
-      if (value is JsValue jsValue)
+      catch (Exception ex)
       {
-        result = ScriptEnvironment.TransformValue(jsValue, useLiterals);
-      }
-      else if (value is null)
-      {
-        result = useLiterals ? "null" : null;
-      }
-      else
-      {
-        result = value.ToString();
+        result = null;
+
+        this.HandleException(ex);
+
+        if (!_suppressErrors)
+        {
+          throw;
+        }
       }
 
       return result;
     }
 
-    public void WrappedExecute(string script)
+    public object Execute(string script)
     {
+      object result;
+
+      this.Load(script, out Script program);
+
+      if (ScriptEnvironment.HasMainFunction(program) && !ScriptEnvironment.HasMainCaller(program))
+      {
+        result = this.Invoke(MainFunctionName);
+      }
+      else
+      {
+        result = _engine.GetCompletionValue().ToObject();
+      }
+
+      return result;
+    }
+
+    public object Invoke(string name)
+    {
+      return this.Invoke(name, _defaultArguments);
+    }
+
+    public object Invoke(string name, params object[] arguments)
+    {
+      object result;
+
       try
       {
-        JsValue completionValue;
-        JsValue result;
-        string output;
+        this.InitializeEngine();
 
-        this.Execute(script);
-
-        completionValue = _engine.GetCompletionValue();
-        result = _engine.GetValue(completionValue);
-        output = ScriptEnvironment.TransformValue(result, true);
-
-        this.WriteLine(output);
+        result = _engine.Invoke(name, arguments).ToObject();
       }
       catch (Exception ex)
       {
-        this.WriteLine(string.Format("{0}: {1}", ex.GetType().Name, ex.GetBaseException().Message));
+        result = null;
+
+        this.HandleException(ex);
+
+        if (!_suppressErrors)
+        {
+          throw;
+        }
       }
+
+      return result;
+    }
+
+    public void Load(string script)
+    {
+      this.Load(script, out Script _);
     }
 
     #endregion Public Methods
@@ -148,9 +161,10 @@ namespace Cyotek.Scripting.JavaScript
 
     protected abstract void ClearScreen();
 
-    protected string GetValueString(object obj)
+    protected virtual void HandleException(Exception ex)
     {
-      return (obj ?? "NULL").ToString();
+      // TODO: Convert to cancellable event
+      this.WriteLine(ex.GetBaseException().Message);
     }
 
     protected virtual void InitializeEnvironment()
@@ -177,46 +191,7 @@ namespace Cyotek.Scripting.JavaScript
 
     #region Private Methods
 
-    private static bool HasMainCaller(Program program)
-    {
-      bool result;
-
-      result = false;
-
-      foreach (Statement statement in program.Body)
-      {
-        if (statement is ExpressionStatement expressionStatement
-            && expressionStatement.Expression is CallExpression callExpression
-            && callExpression.Callee is Identifier identifier
-            && string.Equals(identifier.Name, MainFunctionName, StringComparison.OrdinalIgnoreCase))
-        {
-          result = true;
-          break;
-        }
-      }
-
-      return result;
-    }
-
-    private static bool HasMainFunction(Script program)
-    {
-      bool result;
-
-      result = false;
-
-      for (int i = 0; i < program.ChildNodes.Count; i++)
-      {
-        if (program.ChildNodes[i] is FunctionDeclaration functionDeclaration && string.Equals(functionDeclaration.Id.Name, MainFunctionName, StringComparison.OrdinalIgnoreCase))
-        {
-          result = true;
-          break;
-        }
-      }
-
-      return result;
-    }
-
-    private static string TransformValue(JsValue jsValue, bool useLiterals)
+    private static string GetValueString(JsValue jsValue, bool useLiterals)
     {
       string result;
 
@@ -258,6 +233,71 @@ namespace Cyotek.Scripting.JavaScript
       return result;
     }
 
+    private static bool HasFunction(Script program, string name)
+    {
+      bool result;
+
+      result = false;
+
+      for (int i = 0; i < program.ChildNodes.Count; i++)
+      {
+        if (program.ChildNodes[i] is FunctionDeclaration functionDeclaration
+            && string.Equals(functionDeclaration.Id.Name, name, StringComparison.OrdinalIgnoreCase))
+        {
+          result = true;
+          break;
+        }
+      }
+
+      return result;
+    }
+
+    private static bool HasMainCaller(Program program)
+    {
+      bool result;
+
+      result = false;
+
+      foreach (Statement statement in program.Body)
+      {
+        if (statement is ExpressionStatement expressionStatement
+            && expressionStatement.Expression is CallExpression callExpression
+            && callExpression.Callee is Identifier identifier
+            && string.Equals(identifier.Name, MainFunctionName, StringComparison.OrdinalIgnoreCase))
+        {
+          result = true;
+          break;
+        }
+      }
+
+      return result;
+    }
+
+    private static bool HasMainFunction(Script program)
+    {
+      return ScriptEnvironment.HasFunction(program, MainFunctionName);
+    }
+
+    private string GetValueString(object value, bool useLiterals)
+    {
+      string result;
+
+      if (value is JsValue jsValue)
+      {
+        result = ScriptEnvironment.GetValueString(jsValue, useLiterals);
+      }
+      else if (value is null)
+      {
+        result = useLiterals ? "null" : null;
+      }
+      else
+      {
+        result = value.ToString();
+      }
+
+      return result;
+    }
+
     private void InitializeEngine()
     {
       if (_engine == null)
@@ -268,29 +308,52 @@ namespace Cyotek.Scripting.JavaScript
       }
     }
 
+    private void Load(string script, out Script program)
+    {
+      program = null;
+
+      try
+      {
+        program = new JavaScriptParser(script).ParseScript();
+
+        this.InitializeEngine();
+
+        _engine.Execute(program);
+      }
+      catch (Exception ex)
+      {
+        this.HandleException(ex);
+
+        if (!_suppressErrors)
+        {
+          throw;
+        }
+      }
+    }
+
     private void ShowAlert(object message)
     {
       if (_interactive)
       {
-        this.ShowAlert(this.TransformValue(message, false));
+        this.ShowAlert(this.GetValueString(message, false));
       }
     }
 
     private bool ShowConfirm(object message)
     {
-      return _interactive && this.ShowConfirm(this.TransformValue(message, false));
+      return _interactive && this.ShowConfirm(this.GetValueString(message, false));
     }
 
     private string ShowPrompt(object message, object defaultValue)
     {
       return _interactive
-         ? this.ShowPrompt(this.TransformValue(message, false), this.TransformValue(defaultValue, false))
+         ? this.ShowPrompt(this.GetValueString(message, false), this.GetValueString(defaultValue, false))
          : null;
     }
 
     private void WriteLine(object value)
     {
-      this.WriteLine(this.TransformValue(value, true));
+      this.WriteLine(this.GetValueString(value, true));
     }
 
     #endregion Private Methods
