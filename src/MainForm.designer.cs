@@ -70,6 +70,7 @@
       this.scriptTextBox = new System.Windows.Forms.TextBox();
       this.logTextBox = new System.Windows.Forms.TextBox();
       this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+      this.invokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip.SuspendLayout();
       this.toolStrip.SuspendLayout();
       this.statusStrip.SuspendLayout();
@@ -236,6 +237,7 @@
       // 
       this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runToolStripMenuItem,
+            this.invokeToolStripMenuItem,
             this.toolStripMenuItem1,
             this.viewASTToolStripMenuItem});
       this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
@@ -474,6 +476,14 @@
       this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_DoWork);
       this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_RunWorkerCompleted);
       // 
+      // invokeToolStripMenuItem
+      // 
+      this.invokeToolStripMenuItem.Name = "invokeToolStripMenuItem";
+      this.invokeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
+      this.invokeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+      this.invokeToolStripMenuItem.Text = "&Invoke...";
+      this.invokeToolStripMenuItem.Click += new System.EventHandler(this.InvokeToolStripMenuItem_Click);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -558,6 +568,7 @@
     private System.Windows.Forms.ToolStripStatusLabel heightToolStripStatusLabel;
     private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
     private System.Windows.Forms.ToolStripMenuItem viewASTToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem invokeToolStripMenuItem;
   }
 }
 
