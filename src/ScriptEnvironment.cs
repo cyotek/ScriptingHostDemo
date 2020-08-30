@@ -79,27 +79,9 @@ namespace Cyotek.Scripting.JavaScript
 
     public object Evaluate(string script)
     {
-      object result;
+      this.Load(script);
 
-      try
-      {
-        this.Execute(script);
-
-        result = _engine.GetCompletionValue().ToObject();
-      }
-      catch (Exception ex)
-      {
-        result = null;
-
-        this.HandleException(ex);
-
-        if (!_suppressErrors)
-        {
-          throw;
-        }
-      }
-
-      return result;
+      return _engine.GetCompletionValue().ToObject();
     }
 
     public object Execute(string script)

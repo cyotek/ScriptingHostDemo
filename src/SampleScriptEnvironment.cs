@@ -17,6 +17,7 @@ namespace Cyotek.Demo.ScriptingHost
 
     public SampleScriptEnvironment(TextBoxBase logControl)
     {
+      // TODO: Use a property interface instead of directly binding a control
       _logControl = logControl;
     }
 
@@ -62,7 +63,7 @@ namespace Cyotek.Demo.ScriptingHost
       }
       else
       {
-        result = InputDialog.ShowInputDialog(_logControl.FindForm(), message, Application.ProductName, defaultValue);
+        result = InputDialog.ShowInputDialog(owner, message, Application.ProductName, defaultValue);
       }
 
       return result;
