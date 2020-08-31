@@ -18,3 +18,5 @@ function toGrayScale(c)
 
   return color.FromArgb(gray, gray, gray);
 }
+
+main();
