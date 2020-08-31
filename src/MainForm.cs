@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Media;
 using System.Text;
 using System.Windows.Forms;
@@ -260,6 +259,69 @@ namespace Cyotek.Demo
       gridLinesToolStripMenuItem.Checked = !gridLinesToolStripMenuItem.Checked;
 
       renderPanel.Invalidate();
+    }
+
+    private void InvokeToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      string instruction;
+
+      instruction = InputDialog.ShowInputDialog("&Enter function name:", "Invoke", (string)null);
+
+      if (!string.IsNullOrEmpty(instruction))
+      {
+        object result;
+        int position;
+
+        position = instruction.IndexOf(' ');
+
+        if (position == -1)
+        {
+          result = _scriptEnvironment.Invoke(instruction);
+        }
+        else
+        {
+          string name;
+          string[] rawArgs;
+          object[] args;
+
+          name = instruction.Substring(0, position);
+          rawArgs = instruction.Substring(position + 1).Split(',');
+          args = new object[rawArgs.Length];
+
+          for (int i = 0; i < rawArgs.Length; i++)
+          {
+            string arg;
+
+            arg = rawArgs[i];
+
+            if (double.TryParse(arg, out double number))
+            {
+              args[i] = number;
+            }
+            else if (bool.TryParse(arg, out bool boolean))
+            {
+              args[i] = boolean;
+            }
+            else if (DateTime.TryParse(arg, out DateTime datetime))
+            {
+              args[i] = datetime;
+            }
+            else
+            {
+              args[i] = arg.Trim();
+            }
+          }
+
+          result = _scriptEnvironment.Invoke(name, args);
+        }
+
+        if (result != null)
+        {
+          MessageBox.Show(result.ToString(), "Invoke", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        renderPanel.Invalidate();
+      }
     }
 
     private bool IsImageFile(string fileName, out FastBitmap image)
@@ -577,66 +639,5 @@ namespace Cyotek.Demo
     }
 
     #endregion Private Methods
-
-    private void InvokeToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-      string instruction;
-
-      instruction = InputDialog.ShowInputDialog("&Enter function name:", "Invoke", (string)null);
-
-      if (!string.IsNullOrEmpty(instruction))
-      {
-        object result;
-        int position;
-
-        position = instruction.IndexOf(' ');
-
-        if (position == -1)
-        {
-          result = _scriptEnvironment.Invoke(instruction);
-        }
-        else
-        {
-          string name;
-          string[] rawArgs;
-          object[] args;
-
-          name = instruction.Substring(0, position);
-          rawArgs = instruction.Substring(position + 1).Split(',');
-          args = new object[rawArgs.Length];
-
-          for (int i = 0; i < rawArgs.Length; i++)
-          {
-            string arg;
-
-            arg = rawArgs[i];
-
-            if (double.TryParse(arg, out double number))
-            {
-              args[i] = number;
-            }
-            else if (bool.TryParse(arg, out bool boolean))
-            {
-              args[i] = boolean;
-            }
-            else if (DateTime.TryParse(arg, out DateTime datetime))
-            {
-              args[i] = datetime;
-            }
-            else
-            {
-              args[i] = arg.Trim();
-            }
-          }
-
-          result = _scriptEnvironment.Invoke(name, args);
-        }
-
-        if (result != null)
-        {
-          MessageBox.Show(result.ToString(), "Invoke", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-      }
-    }
   }
 }
