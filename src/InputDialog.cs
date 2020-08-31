@@ -3,20 +3,74 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+// Adding Scripting to .NET Applications
+// https://www.cyotek.com/blog/adding-scripting-to-net-applications
+
+// Copyright © 2020 Cyotek Ltd. All Rights Reserved.
+
+// This work is licensed under the MIT License.
+// See LICENSE.TXT for the full text
+
+// Found this example useful?
+// https://www.paypal.me/cyotek
+
 namespace Cyotek.Windows.Forms
 {
   internal partial class InputDialog : BaseForm
   {
-    #region Constructors
+    #region Private Fields
+
+    private string _footerText;
+
+    private string _promptText;
+
+    private string _value;
+
+    #endregion Private Fields
+
+    #region Public Constructors
 
     public InputDialog()
     {
       this.InitializeComponent();
     }
 
-    #endregion
+    #endregion Public Constructors
 
-    #region Static Methods
+    #region Public Properties
+
+    public string FooterText
+    {
+      get { return _footerText; }
+      set { _footerText = value; }
+    }
+
+    [DefaultValue(false)]
+    public bool Multiline
+    {
+      get { return inputTextBox.Multiline; }
+      set { inputTextBox.Multiline = value; }
+    }
+
+    [DefaultValue("")]
+    public string PromptText
+    {
+      get { return _promptText; }
+      set { _promptText = value; }
+    }
+
+    public Func<string, bool> ValidationCallback { get; set; }
+
+    [DefaultValue("")]
+    public string Value
+    {
+      get { return _value; }
+      set { _value = value; }
+    }
+
+    #endregion Public Properties
+
+    #region Public Methods
 
     public static string ShowInputDialog(string promptText)
     {
@@ -71,50 +125,9 @@ namespace Cyotek.Windows.Forms
       return result;
     }
 
-    #endregion
+    #endregion Public Methods
 
-    #region Properties
-
-    [DefaultValue(false)]
-    public bool Multiline
-    {
-      get { return inputTextBox.Multiline; }
-      set { inputTextBox.Multiline = value; }
-    }
-
-    private string _promptText;
-
-    [DefaultValue("")]
-    public string PromptText
-    {
-      get { return _promptText; }
-      set { _promptText = value; }
-    }
-
-    private string _footerText;
-
-    public string FooterText
-    {
-      get { return _footerText; }
-      set { _footerText = value; }
-    }
-
-
-    public Func<string, bool> ValidationCallback { get; set; }
-
-    private string _value;
-
-    [DefaultValue("")]
-    public string Value
-    {
-      get { return _value; }
-      set { _value = value; }
-    }
-
-
-    #endregion
-
-    #region Methods
+    #region Protected Methods
 
     protected override void OnLoad(EventArgs e)
     {
@@ -145,6 +158,10 @@ namespace Cyotek.Windows.Forms
       //this.SetClientHeight(height);
     }
 
+    #endregion Protected Methods
+
+    #region Private Methods
+
     private void cancelButton_Click(object sender, EventArgs e)
     {
       this.DialogResult = DialogResult.Cancel;
@@ -158,11 +175,11 @@ namespace Cyotek.Windows.Forms
       }
       else
       {
-        _value = inputTextBox.Text;        
+        _value = inputTextBox.Text;
         this.DialogResult = DialogResult.OK;
       }
     }
 
-    #endregion
+    #endregion Private Methods
   }
 }
