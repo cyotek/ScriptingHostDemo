@@ -1,6 +1,6 @@
 # Adding Scripting to .NET Applications
 
-![The sample application][2]]
+![The sample application][2]
 
 This repository contains a sample application demonstrating how
 you can add JavaScript scripting to your application via the
