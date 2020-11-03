@@ -117,6 +117,7 @@ namespace Cyotek.Demo
       logTextBox.AppendText(result + Environment.NewLine);
 
       renderPanel.Invalidate();
+      this.UpdateStatusBar();
     }
 
     private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -332,6 +333,7 @@ namespace Cyotek.Demo
         }
 
         renderPanel.Invalidate();
+        this.UpdateStatusBar();
       }
     }
 
